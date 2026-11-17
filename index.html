@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bruno Bezerra</title>
+<meta name="description" content="Bruno Bezerra · Infraestrutura e Cloud Microsoft.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Conceito: infraestrutura é invisível. A página parece vazia; o cursor funciona como lanterna
+   e revela, em dither, o que está por baixo. Papel branco, tinta preta, nada mais. */
+:root{
+  --paper:#fbfbf9; --ink:#0b0b0b; --ghost:#e9e9e5; --dim:#8a8a85;
+  --f-display:"Funnel Display", "Helvetica Neue", Arial, sans-serif;
+  --f-mono:"Geist Mono", "Cascadia Code", Consolas, monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--paper); color:var(--ink); font:400 13px/1.5 var(--f-mono); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit; text-decoration:none}
+:focus-visible{outline:1px solid var(--ink); outline-offset:4px}
+::selection{background:var(--ink); color:var(--paper)}
+.pad{padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px))}
+@media (min-width:900px){ .pad{padding-left:max(40px, env(safe-area-inset-left,0px)); padding-right:max(40px, env(safe-area-inset-right,0px))} }
+
+/* ---------- 01 · a lanterna ---------- */
+.dark-room{position:relative; height:100svh; min-height:520px; overflow:hidden; cursor:crosshair; touch-action:pan-y}
+#field{position:absolute; inset:0; width:100%; height:100%; image-rendering:pixelated; image-rendering:crisp-edges}
+.corner{position:absolute; padding-block:max(20px, env(safe-area-inset-top,0px)) 0; display:flex; justify-content:space-between; gap:16px; left:0; right:0; pointer-events:none}
+.corner.top{top:0}
+.corner.bot{bottom:0; padding-block:0 max(20px, env(safe-area-inset-bottom,0px)); align-items:flex-end}
+.corner span{max-width:34ch}
+.dim{color:var(--dim)}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- 02 · a frase ---------- */
+.line{padding-block:22vh 18vh}
+.line h2{margin:0; font:300 clamp(2.6rem, 8.4vw, 9.5rem)/.92 var(--f-display); letter-spacing:-.045em; text-wrap:balance; max-width:13ch}
+.line h2 .g{color:var(--ghost); transition:color 1.2s ease}
+.line h2:hover .g{color:var(--ink)}
+.line p{margin:40px 0 0; color:var(--dim)}
+
+/* ---------- 03 · o trabalho ---------- */
+.work{padding-block:6vh 22vh; display:grid; grid-template-columns:repeat(12,1fr); gap:0 24px}
+.work .words{grid-column:1/-1; margin:0; font:500 clamp(2.4rem, 7.2vw, 8rem)/1 var(--f-display); letter-spacing:-.04em}
+.work .words span{display:inline-block; margin-right:.28em}
+.work .words sup{font:400 13px var(--f-mono); letter-spacing:0; vertical-align:top; position:relative; top:.6em; margin-left:.25em}
+.notes{grid-column:7/-1; margin:56px 0 0; padding:0; list-style:none; display:grid; gap:6px; counter-reset:n}
+.notes li{display:grid; grid-template-columns:2.2em 1fr; min-width:0}
+.notes li::before{counter-increment:n; content:counter(n); color:var(--dim)}
+@media (max-width:900px){ .notes{grid-column:1/-1} }
+
+/* ---------- 04 · contato ---------- */
+footer{padding-block:0 max(28px, env(safe-area-inset-bottom,0px)); display:grid; grid-template-columns:repeat(12,1fr); gap:24px; align-items:end}
+.links{grid-column:1/8; display:flex; flex-direction:column}
+.links a{font:300 clamp(2.4rem, 7.2vw, 8rem)/.95 var(--f-display); letter-spacing:-.04em; display:inline-flex; gap:.2em; width:max-content; max-width:100%}
+.links a .arr{display:inline-block; transition:transform .5s cubic-bezier(.2,.7,.1,1)}
+.links a:hover .arr{transform:translate(.12em,-.12em)}
+.links a:hover{font-style:italic}
+.meta{grid-column:8/-1; display:grid; gap:4px; justify-items:end; text-align:right}
+@media (max-width:900px){ .links,.meta{grid-column:1/-1} .meta{justify-items:start; text-align:left} }
+
+@media (prefers-reduced-motion: reduce){ .line h2 .g{transition:none} .links a .arr{transition:none} }
+</style>
+
+<main>
+  <section class="dark-room" id="room" aria-label="Bruno Bezerra, infraestrutura e cloud Microsoft">
+    <canvas id="field" aria-hidden="true"></canvas>
+    <div class="corner top pad">
+      <span>Bruno Bezerra</span>
+      <span class="dim" style="text-align:right">Infraestrutura e<br>Cloud Microsoft</span>
+    </div>
+    <div class="corner bot pad">
+      <span class="dim tnum" id="clock">São Paulo</span>
+      <span class="dim" id="hint" style="text-align:right">mova o cursor</span>
+    </div>
+  </section>
+
+  <section class="line pad">
+    <h2>Quando tudo funciona, <span class="g">ninguém percebe.</span></h2>
+    <p>É esse o trabalho.</p>
+  </section>
+
+  <section class="work pad" aria-label="Áreas">
+    <p class="words">
+      <span>Identidade<sup>1</sup></span>
+      <span>Nuvem<sup>2</sup></span>
+      <span>Automação<sup>3</sup></span>
+      <span>Rede<sup>4</sup></span>
+    </p>
+    <ol class="notes">
+      <li>Microsoft Entra ID, Active Directory. Contas, grupos, acessos.</li>
+      <li>Azure, Microsoft 365, Exchange Online, Teams, SharePoint.</li>
+      <li>PowerShell, APIs REST, webhooks, Git, Azure DevOps.</li>
+      <li>TCP/IP, DNS, DHCP, VPN. Zabbix, GLPI.</li>
+    </ol>
+  </section>
+</main>
+
+<footer class="pad">
+  <nav class="links" aria-label="Contato">
+    <a href="https://www.linkedin.com/in/bruno-bezerra-504838241/" target="_blank" rel="noopener">LinkedIn<span class="arr">↗</span></a>
+    <a href="https://github.com/brunodesu" target="_blank" rel="noopener">GitHub<span class="arr">↗</span></a>
+  </nav>
+  <div class="meta dim">
+    <span>Inglês C1 · Espanhol B2</span>
+    <span>Agora: AZ-104, Linux, Terraform</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const room = document.getElementById('room');
+  const cv = document.getElementById('field'), g = cv.getContext('2d');
+  const CELL = 3;
+  let W = 0, H = 0, base, reveal, img, buf;
+
+  /* relógio */
+  const clock = document.getElementById('clock');
+  const tick = () => clock.textContent = 'São Paulo, ' + new Date().toLocaleTimeString('pt-BR', {timeZone:'America/Sao_Paulo'});
+  tick(); setInterval(tick, 1000);
+  if (matchMedia('(hover: none)').matches) document.getElementById('hint').textContent = 'arraste o dedo';
+
+  /* matriz de Bayer 8×8 */
+  const B = (() => { let m = [[0]];
+    for (let n = 1; n < 8; n *= 2) { const q = []; for (let y = 0; y < 2*n; y++) { q[y] = [];
+      for (let x = 0; x < 2*n; x++) q[y][x] = 4*m[y%n][x%n] + [[0,2],[3,1]][y/n|0][x/n|0]; } m = q; }
+    return Float32Array.from(m.flat(), v => (v + .5) / 64); })();
+
+  /* camada escondida: cabos, nós e o nome */
+  function build() {
+    const r = room.getBoundingClientRect();
+    W = Math.ceil(r.width / CELL); H = Math.ceil(r.height / CELL);
+    cv.width = W; cv.height = H;
+    const o = document.createElement('canvas'); o.width = W; o.height = H;
+    const c = o.getContext('2d');
+    c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+    // cabeamento
+    c.lineCap = 'round';
+    for (let i = 0; i < 46; i++) {
+      const y0 = rnd() * H, y1 = rnd() * H;
+      c.strokeStyle = `rgba(255,255,255,${.35 + rnd() * .4})`;
+      c.lineWidth = rnd() < .2 ? 2 : 1;
+      c.beginPath(); c.moveTo(-10, y0);
+      c.bezierCurveTo(W * (.2 + rnd() * .3), y0 + (rnd() - .5) * H * .6, W * (.5 + rnd() * .3), y1 + (rnd() - .5) * H * .6, W + 10, y1);
+      c.stroke();
+    }
+    // racks / nós
+    for (let i = 0; i < 70; i++) {
+      const x = rnd() * W, y = rnd() * H, s = 1 + (rnd() * 3 | 0);
+      c.fillStyle = `rgba(255,255,255,${.6 + rnd() * .4})`; c.fillRect(x, y, s, s);
+    }
+    // o nome
+    const fam = getComputedStyle(document.documentElement).getPropertyValue('--f-display');
+    const mx = Math.round((innerWidth >= 900 ? 40 : 16) / CELL);
+    let size = 100; c.font = `800 ${size}px ${fam}`;
+    size = Math.min(size * (W - mx * 2) / c.measureText('BEZERRA').width, H * .3);
+    c.font = `800 ${size}px ${fam}`; c.textBaseline = 'alphabetic'; c.fillStyle = '#fff';
+    const cy = H * .52;
+    c.fillText('BRUNO', mx - size * .03, cy);
+    c.fillText('BEZERRA', mx - size * .03, cy + size * .86);
+
+    const d = c.getImageData(0, 0, W, H).data;
+    base = new Float32Array(W * H);
+    for (let i = 0; i < W * H; i++) base[i] = Math.max(d[i * 4] / 255, .07 + rnd() * .06);
+    const old = reveal; reveal = new Float32Array(W * H);
+    img = g.createImageData(W, H); buf = new Uint32Array(img.data.buffer);
+    if (!old) stamp(W * .3, H * .55, 1.6), stamp(W * .62, H * .7, 1.2);
+  }
+
+  /* a lanterna deixa um rastro que se apaga devagar */
+  const RAD = () => Math.max(26, Math.min(W, H) * .17);
+  function stamp(px, py, k = 1) {
+    const r = RAD() * k, x0 = Math.max(0, px - r | 0), x1 = Math.min(W - 1, px + r | 0), y0 = Math.max(0, py - r | 0), y1 = Math.min(H - 1, py + r | 0);
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+      const q = ((x - px) ** 2 + (y - py) ** 2) / (r * r);
+      if (q < 1) { const f = (1 - q) ** 2, i = y * W + x; if (f > reveal[i]) reveal[i] = f; }
+    }
+  }
+  function render(decay) {
+    const INK = 0xff0b0b0b;
+    for (let y = 0; y < H; y++) { const by = (y & 7) * 8;
+      for (let x = 0; x < W; x++) { const i = y * W + x;
+        if (decay) reveal[i] *= .972;
+        buf[i] = base[i] * reveal[i] * 1.5 > B[by + (x & 7)] ? INK : 0; } }
+    g.putImageData(img, 0, 0);
+  }
+
+  let pos = null, last = -1e9, prev = null;
+  const move = e => {
+    const r = cv.getBoundingClientRect();
+    pos = {x:(e.clientX - r.left) / CELL, y:(e.clientY - r.top) / CELL}; last = performance.now();
+  };
+  room.addEventListener('pointermove', move, {passive:true});
+  room.addEventListener('pointerdown', move, {passive:true});
+
+  let visible = true;
+  new IntersectionObserver(es => visible = es[0].isIntersecting).observe(room);
+
+  const start = () => {
+    build();
+    if (reduce) { stamp(W * .5, H * .6, 3); render(false); return; }
+    const loop = t => {
+      if (visible) {
+        let p = pos;
+        if (t - last > 2200) p = {x: W * (.5 + .38 * Math.sin(t / 2300)), y: H * (.6 + .22 * Math.sin(t / 1700 + 1))};
+        if (p) {
+          // preenche o caminho entre quadros para o rastro não falhar
+          const steps = prev ? Math.min(12, Math.ceil(Math.hypot(p.x - prev.x, p.y - prev.y) / 6)) : 1;
+          for (let s = 1; s <= steps; s++) stamp(prev ? prev.x + (p.x - prev.x) * s / steps : p.x, prev ? prev.y + (p.y - prev.y) * s / steps : p.y);
+          prev = {x:p.x, y:p.y};
+        }
+        render(true);
+      }
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  };
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(start);
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); if (reduce) { stamp(W * .5, H * .6, 3); render(false); } }, 150); });
+})();
+</script>
+</html>
